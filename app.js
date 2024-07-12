@@ -15,6 +15,10 @@ const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 const dbName = process.env.DB_NAME;
 
+app.get('/status/:phoneNumber', async (req, res) => {
+    res.send('SMS Server running');
+});
+
 app.post('/subscription', async (req, res) => {
   const parser = new xml2js.Parser({ explicitArray: false });
 
