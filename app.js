@@ -42,7 +42,7 @@ app.post('/api/data', async (req, res) => {
           ID: userID,
           amount: 2,
           status: true,
-          ...syncOrderRelation
+        //   ...syncOrderRelation
         });
       }
     } else if (updateType === '2') {
