@@ -19,7 +19,7 @@ app.get('/', async (req, res) => {
     res.send('SMS Server running');
 });
 
-app.post('/subscription', async (req, res) => {
+app.post('/api/data', async (req, res) => {
   const parser = new xml2js.Parser({ explicitArray: false });
 
   try {
