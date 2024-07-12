@@ -15,7 +15,7 @@ const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 const dbName = process.env.DB_NAME;
 
-app.get('/status/:phoneNumber', async (req, res) => {
+app.get('/', async (req, res) => {
     res.send('SMS Server running');
 });
 
