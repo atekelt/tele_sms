@@ -34,12 +34,12 @@ app.post('/api/data', async (req, res) => {
 
     if (updateType === '1') {
       // Handle subscription
-      const existingRecord = await collection.findOne({ ID: userID });
+      const existingRecord = await collection.findOne({ _id: userID });
       if (existingRecord) {
-        await collection.updateOne({ ID: userID }, { $inc: { amount: 2 } });
+        await collection.updateOne({ _id: userID }, { $inc: { amount: 2 } });
       } else {
         await collection.insertOne({
-          ID: userID,
+          _id: userID,
           amount: 2,
           status: true,
         //   ...syncOrderRelation
@@ -47,7 +47,7 @@ app.post('/api/data', async (req, res) => {
       }
     } else if (updateType === '2') {
     //   Handle unsubscription
-      await collection.updateOne({ ID: userID }, { $set: { status: false } });
+      await collection.updateOne({ _id: userID }, { $set: { status: false } });
     }
 
     res.status(200).send('Success');
@@ -68,11 +68,11 @@ app.post('/status', async (req, res) => {
     const db = client.db(dbName);
     const collection = db.collection('subscriptions');
 
-    const record = await collection.findOne({ ID: phoneNumber });
+    const record = await collection.findOne({ _id: phoneNumber });
 
     if (record) {
       res.status(200).json({
-        ID: record.ID,
+        _id: record.ID,
         amount: record.amount,
         status: record.status
       });
@@ -96,7 +96,7 @@ app.post('/api/update', async (req, res) => {
     const collection = db.collection('subscriptions');
 
     const updateResult = await collection.updateOne(
-      { ID: ID },
+      { _id: ID },
       { $set: { status: status, amount: amount } }
     );
 
