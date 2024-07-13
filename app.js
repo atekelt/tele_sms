@@ -72,7 +72,7 @@ app.post('/status', async (req, res) => {
 
     if (record) {
       res.status(200).json({
-        _id: record.ID,
+        _id: record._id,
         amount: record.amount,
         status: record.status
       });
