@@ -87,6 +87,32 @@ app.post('/status', async (req, res) => {
   }
 });
 
+app.post('/api/update', async (req, res) => {
+  const { ID, status, amount } = req.body;
+
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection('subscriptions');
+
+    const updateResult = await collection.updateOne(
+      { ID: ID },
+      { $set: { status: status, amount: amount } }
+    );
+
+    if (updateResult.matchedCount > 0) {
+      res.status(200).send('Update successful');
+    } else {
+      res.status(404).send('Record not found');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  } finally {
+    await client.close();
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
