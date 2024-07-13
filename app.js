@@ -34,20 +34,19 @@ app.post('/api/data', async (req, res) => {
 
     if (updateType === '1') {
       // Handle subscription
-      const existingRecord = await collection.findOne({ _id: userID });
+      const existingRecord = await collection.findOne({ ID: userID });
       if (existingRecord) {
-        await collection.updateOne({ _id: userID }, { $inc: { amount: 2 } });
+        await collection.updateOne({ ID: userID }, { $inc: { amount: 2 } });
       } else {
         await collection.insertOne({
-          _id: userID,
+          ID: userID,
           amount: 2,
           status: true,
-        //   ...syncOrderRelation
         });
       }
     } else if (updateType === '2') {
-    //   Handle unsubscription
-      await collection.updateOne({ _id: userID }, { $set: { status: false } });
+      // Handle unsubscription
+      await collection.updateOne({ ID: userID }, { $set: { status: false } });
     }
 
     res.status(200).send('Success');
@@ -87,7 +86,7 @@ app.post('/status', async (req, res) => {
   }
 });
 
-
+// New POST route to update status and amount by ID
 app.post('/api/update', async (req, res) => {
   const { ID, status, amount } = req.body;
 
