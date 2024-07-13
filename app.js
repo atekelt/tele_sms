@@ -97,7 +97,7 @@ app.post('/api/update', async (req, res) => {
     const collection = db.collection('subscriptions');
 
     const updateResult = await collection.updateOne(
-      { _id: ID },
+      { ID: ID },
       { $set: { status: status, amount: amount } }
     );
 
