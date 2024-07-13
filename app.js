@@ -68,11 +68,11 @@ app.post('/status', async (req, res) => {
     const db = client.db(dbName);
     const collection = db.collection('subscriptions');
 
-    const record = await collection.findOne({ _id: phoneNumber });
+    const record = await collection.findOne({ ID: phoneNumber });
 
     if (record) {
       res.status(200).json({
-        _id: record._id,
+        ID: record.ID,
         amount: record.amount,
         status: record.status
       });
@@ -86,6 +86,7 @@ app.post('/status', async (req, res) => {
     await client.close();
   }
 });
+
 
 app.post('/api/update', async (req, res) => {
   const { ID, status, amount } = req.body;
