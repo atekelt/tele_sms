@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const xml2js = require('xml2js');
+const dotenv = require('dotenv');
 const { MongoClient } = require('mongodb');
 require('dotenv').config(); // Load environment variables
 
@@ -45,7 +46,7 @@ app.post('/api/data', async (req, res) => {
         });
       }
     } else if (updateType === '2') {
-      // Handle unsubscription
+      //  Handle unsubscription
       await collection.updateOne({ ID: userID }, { $set: { status: false } });
     }
 
@@ -113,6 +114,68 @@ app.post('/api/update', async (req, res) => {
   }
 });
 
+function sendSMS(destination, message, callback) {
+  const session = new smpp.Session({
+      host: process.env.SMPP_HOST,
+      port: process.env.SMPP_PORT
+  });
+
+  session.on('connect', () => {
+      console.log('Connected to SMPP server');
+
+      // Bind to the SMPP server
+      session.bind_transceiver({
+          system_id: process.env.SMPP_SYSTEM_ID,
+          password: process.env.SMPP_PASSWORD
+      }, (pdu) => {
+          if (pdu.command_status === 0) {
+              console.log('Successfully bound to SMPP server');
+
+              // Send SMS
+              session.submit_sm({
+                  destination_addr: destination,
+                  short_message: message,
+                  source_addr: process.env.SOURCE_ADDR
+              }, (pdu) => {
+                  if (pdu.command_status === 0) {
+                      console.log('Message successfully sent');
+                      callback(null, 'Message successfully sent');
+                  } else {
+                      console.log('Failed to send message');
+                      callback(new Error('Failed to send message'));
+                  }
+                  session.close();
+              });
+          } else {
+              console.log('Failed to bind to SMPP server');
+              callback(new Error('Failed to bind to SMPP server'));
+              session.close();
+          }
+      });
+  });
+
+  session.on('close', () => {
+      console.log('SMPP session closed');
+  });
+
+  session.on('error', (error) => {
+      console.error('SMPP session error:', error);
+      callback(error);
+  });
+}
+
+// Route to send SMS
+app.post('/send-sms', (req, res) => {
+  const { destination, message } = req.body;
+
+  sendSMS(destination, message, (error, result) => {
+      if (error) {
+          return res.status(500).send({ error: error.message });
+      }
+      res.send({ message: result });
+  });
+});
+
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running`);
 });
