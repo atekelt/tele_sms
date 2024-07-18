@@ -134,8 +134,7 @@ function sendSMS(destination, message, callback) {
               // Send SMS
               session.submit_sm({
                   destination_addr: destination,
-                  short_message: message,
-                  source_addr: process.env.SOURCE_ADDR
+                  short_message: message
               }, (pdu) => {
                   if (pdu.command_status === 0) {
                       console.log('Message successfully sent');
