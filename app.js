@@ -139,9 +139,9 @@ function sendSMS(destination, message, callback) {
                   if (pdu.command_status === 0) {
                       console.log('Message successfully sent');
                       callback(null, 'Message successfully sent');
-                  } else {
-                      console.log('Failed to send message');
-                      callback(new Error('Failed to send message'));
+                    } else {
+                      console.log('Failed to send message, command_status:', pdu.command_status);
+                      callback(new Error(`Failed to send message, command_status: ${pdu.command_status}`));
                   }
                   session.close();
               });
