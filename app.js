@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const xml2js = require('xml2js');
-const dotenv = require('dotenv');
+const smpp = require('smpp');
 const { MongoClient } = require('mongodb');
 require('dotenv').config(); // Load environment variables
 
